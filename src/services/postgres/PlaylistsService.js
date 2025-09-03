@@ -1,12 +1,11 @@
 /* eslint-disable no-underscore-dangle */
 const { nanoid } = require('nanoid');
 const { Pool } = require('pg');
-const { mapPlaylistTableToModel } = require('../../utils');
 const InvariantError = require('../../exceptions/InvariantError');
 const NotFoundError = require('../../exceptions/NotFoundError');
 const AuthorizationError = require('../../exceptions/AuthorizationError');
 
-class PlaylistService {
+class PlaylistsService {
   constructor(collaborationsService) {
     this._pool = new Pool();
     this._collaborationsService = collaborationsService;
@@ -21,7 +20,7 @@ class PlaylistService {
 
     const result = await this._pool.query(query);
 
-    if (!result.rows[0].id) {
+    if (!result.rows.length) {
       throw new InvariantError('Playlist gagal ditambahkan');
     }
 
@@ -37,7 +36,7 @@ class PlaylistService {
     };
 
     const result = await this._pool.query(query);
-    return result.rows.map(mapPlaylistTableToModel)[0];
+    return result.rows;
   }
 
   async deletePlaylistById(id) {
@@ -75,7 +74,7 @@ class PlaylistService {
   async addPlaylistSong(playlistId, songId) {
     const id = `playlistsong-${nanoid(16)}`;
     const query = {
-      text: 'INSERT INTO playlist_songs VALUES($1, $2, $3) RETURNING id',
+      text: 'INSERT INTO playlist_songs (id, playlist_id, song_id) VALUES ($1, $2, $3) RETURNING id',
       values: [id, playlistId, songId],
     };
 
@@ -146,4 +145,4 @@ class PlaylistService {
   }
 }
 
-module.exports = PlaylistService;
+module.exports = PlaylistsService;
