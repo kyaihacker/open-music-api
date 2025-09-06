@@ -127,7 +127,7 @@ const init = async () => {
       plugin: playlists,
       options: {
         playlistsService,
-        songsService,
+        songsServices: songsService,
         collaborationsService,
         validator: PlaylistsValidator,
       },

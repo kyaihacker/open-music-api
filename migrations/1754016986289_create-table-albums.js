@@ -17,8 +17,8 @@ exports.up = (pgm) => {
       type: 'TEXT',
       notNull: true,
     },
-    owner: {
-      type: 'VARCHAR(50)',
+    year: {
+      type: 'INT',
       notNull: true,
     },
   });

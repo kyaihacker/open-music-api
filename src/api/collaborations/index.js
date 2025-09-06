@@ -1,5 +1,8 @@
 const CollaborationsHandler = require('./handler');
 const routes = require('./routes');
+const UsersService = require('../../services/postgres/UsersService');
+
+const usersService = new UsersService();
 
 module.exports = {
   name: 'collaborations',
@@ -8,9 +11,9 @@ module.exports = {
     const collaborationsHandler = new CollaborationsHandler(
       collaborationsService,
       playlistsService,
+      usersService,
       validator,
     );
-
     server.route(routes(collaborationsHandler));
   },
 };
