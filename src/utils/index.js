@@ -2,10 +2,12 @@ const mapAlbumsTableToModel = ({
   id,
   name,
   year,
+  cover,
 }) => ({
   id,
   name,
   year,
+  cover,
 });
 
 const mapSongsTableToModel = ({

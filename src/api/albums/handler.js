@@ -8,6 +8,9 @@ class AlbumsHandler {
     this.getAlbumByIdHandler = this.getAlbumByIdHandler.bind(this);
     this.putAlbumByIdHandler = this.putAlbumByIdHandler.bind(this);
     this.deleteAlbumByIdHandler = this.deleteAlbumByIdHandler.bind(this);
+    this.postAlbumLikesHandler = this.postAlbumLikesHandler.bind(this);
+    this.getAlbumLikesHandler = this.getAlbumLikesHandler.bind(this);
+    this.deleteAlbumLikesHandler = this.deleteAlbumLikesHandler.bind(this);
   }
 
   async postAlbumHandler(request, h) {
@@ -59,6 +62,62 @@ class AlbumsHandler {
       status: 'success',
       message: 'Album berhasil dihapus',
     };
+  }
+
+  async postAlbumLikesHandler(request, h) {
+    const { id: albumId } = request.params;
+    const { id: userId } = request.auth.credentials;
+
+    await this._service.getAlbumById(albumId);
+
+    const verifiedLiked = await this._service.verifyAlbumLike(userId, albumId);
+
+    if (!verifiedLiked) {
+      await this._service.addAlbumLike(userId, albumId);
+    } else {
+      const response = h.response({
+        status: 'fail',
+        message: 'Like album hanya bisa dilakukan satu kali',
+      });
+      response.code(400);
+      return response;
+    }
+
+    const response = h.response({
+      status: 'success',
+      message: 'Like berhasil ditambahkan',
+    });
+    response.code(201);
+    return response;
+  }
+
+  async getAlbumLikesHandler(request, h) {
+    const { id: albumId } = request.params;
+    const { customHeader, likes } = await this._service.getAlbumLikes(albumId);
+
+    const response = h.response({
+      status: 'success',
+      data: {
+        likes,
+      },
+    });
+    response.header('X-Data-Source', customHeader);
+    response.code(200);
+    return response;
+  }
+
+  async deleteAlbumLikesHandler(request, h) {
+    const { id: albumId } = request.params;
+    const { id: userId } = request.auth.credentials;
+
+    await this._service.deleteAlbumLike(albumId, userId);
+
+    const response = h.response({
+      status: 'success',
+      message: 'Like album berhasil dibatalkan',
+    });
+    response.code(200);
+    return response;
   }
 }
 

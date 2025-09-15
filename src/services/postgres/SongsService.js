@@ -65,7 +65,7 @@ class SongsService {
       throw new NotFoundError('Lagu tidak ditemukan');
     }
 
-    return result.rows.map(mapSongsTableToModel)[0];
+    return mapSongsTableToModel(result.rows[0]);
   }
 
   async editSongById(id, {
@@ -81,6 +81,8 @@ class SongsService {
     if (!result.rows.length) {
       throw new NotFoundError('Gagal memperbarui lagu. Id tidak ditemukan');
     }
+
+    return result.rows[0].id;
   }
 
   async deleteSongById(id) {
@@ -94,6 +96,8 @@ class SongsService {
     if (!result.rows.length) {
       throw new NotFoundError('Lagu gagal dihapus. Id tidak ditemukan');
     }
+
+    return result.rows[0].id;
   }
 
   async verifySongId(songId) {

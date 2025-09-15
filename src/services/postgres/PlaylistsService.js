@@ -27,12 +27,14 @@ class PlaylistsService {
     return result.rows[0].id;
   }
 
-  async getPlaylists(owner) {
+  async getPlaylists(userId) {
     const query = {
-      text: `SELECT playlists.id, playlists.name, users.username
-      FROM playlists JOIN users ON playlists.owner = users.id
-      WHERE playlists.owner = $1`,
-      values: [owner],
+      text: `SELECT DISTINCT playlists.id, playlists.name, users.username
+      FROM playlists
+      JOIN users ON playlists.owner = users.id
+      LEFT JOIN collaborations ON collaborations.playlist_id = playlists.id
+      WHERE playlists.owner = $1 OR collaborations.user_id = $1`,
+      values: [userId],
     };
 
     const result = await this._pool.query(query);
@@ -97,13 +99,13 @@ class PlaylistsService {
     return result.rows[0].id;
   }
 
-  async getPlaylistSongs(playlistId, owner) {
+  async getPlaylistSongs(playlistId) {
     const playlistQuery = {
       text: `SELECT playlists.id, playlists.name, users.username
       FROM playlists
       LEFT JOIN users ON users.id = playlists.owner
-      WHERE playlists.id = $1 AND playlists.owner = $2`,
-      values: [playlistId, owner],
+      WHERE playlists.id = $1`,
+      values: [playlistId],
     };
 
     const playlistResult = await this._pool.query(playlistQuery);
@@ -123,10 +125,6 @@ class PlaylistsService {
     };
 
     const songsResult = await this._pool.query(songsQuery);
-
-    if (!songsResult.rows.length) {
-      throw new NotFoundError('Lagu dalam playlist tidak ditemukan');
-    }
 
     const songs = songsResult.rows;
 

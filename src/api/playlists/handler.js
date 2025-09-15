@@ -70,7 +70,7 @@ class PlaylistsHandler {
 
     const time = new Date().toISOString();
     await this._playlistsService.addPlaylistActivity({
-      playlistId, songId, credentialId, action: 'add', time,
+      playlistId, songId, userId: credentialId, action: 'add', time,
     });
 
     const response = h.response({
@@ -89,7 +89,7 @@ class PlaylistsHandler {
     const { id: credentialId } = request.auth.credentials;
 
     await this._playlistsService.verifyPlaylistAccess(playlistId, credentialId);
-    const playlist = await this._playlistsService.getPlaylistSongs(playlistId, credentialId);
+    const playlist = await this._playlistsService.getPlaylistSongs(playlistId);
 
     const response = h.response({
       status: 'success',
@@ -112,7 +112,7 @@ class PlaylistsHandler {
 
     const time = new Date().toISOString();
     await this._playlistsService.addPlaylistActivity({
-      playlistId, songId, credentialId, action: 'delete', time,
+      playlistId, songId, userId: credentialId, action: 'delete', time,
     });
 
     const response = h.response({
