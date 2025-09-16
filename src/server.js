@@ -165,6 +165,7 @@ const init = async () => {
       options: {
         service: storageService,
         validator: UploadsValidator,
+        albumsService,
       },
     },
   ]);
