@@ -141,7 +141,7 @@ class AlbumsService {
       const customHeader = 'server';
       const query = {
         text: 'SELECT * FROM user_album_likes WHERE album_id = $1',
-        value: [albumId],
+        values: [albumId],
       };
 
       const result = await this._pool.query(query);
