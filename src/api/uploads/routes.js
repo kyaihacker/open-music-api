@@ -7,7 +7,7 @@ const routes = (handler) => [
     handler: handler.postAlbumCoverHandler,
     options: {
       payload: {
-        allow: 'multipart/form-data',
+        parse: true,
         multipart: true,
         output: 'stream',
         maxBytes: 512000, // 500 KB
@@ -16,10 +16,12 @@ const routes = (handler) => [
   },
   {
     method: 'GET',
-    path: '/upload/{param*}',
+    path: '/uploads/{param*}',
     handler: {
       directory: {
-        path: path.resolve(__dirname, 'file'),
+        path: path.resolve(__dirname, '../../uploads/images'),
+        redirectToSlash: true,
+        index: false,
       },
     },
   },

@@ -36,7 +36,10 @@ class AlbumsHandler {
     return {
       status: 'success',
       data: {
-        album,
+        album: {
+          ...album,
+          coverUrl: album.cover ?? null,
+        },
       },
     };
   }

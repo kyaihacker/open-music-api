@@ -83,7 +83,7 @@ class AlbumsService {
     }
   }
 
-  async addAlbumCover(coverUrl, albumId) {
+  async addAlbumCover(albumId, coverUrl) {
     const query = {
       text: 'UPDATE albums SET cover = $1 WHERE id = $2 RETURNING id',
       values: [coverUrl, albumId],
@@ -96,7 +96,7 @@ class AlbumsService {
     }
   }
 
-  async verifyAlbumLike(albumId, userId) {
+  async verifyAlbumLike(userId, albumId) {
     const query = {
       text: 'SELECT * FROM user_album_likes WHERE album_id = $1 AND user_id = $2',
       values: [albumId, userId],

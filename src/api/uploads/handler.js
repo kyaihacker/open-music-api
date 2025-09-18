@@ -21,7 +21,27 @@ class UploadsHandler {
       return response;
     }
 
-    this._validator.validateImageHeaders(cover.hapi.headers);
+    const contentType = cover.hapi.headers['content-type'];
+    const allowedTypes = ['image/apng', 'image/avif', 'image/jpeg', 'image/gif', 'image/webp'];
+    if (!contentType || !allowedTypes.includes(contentType)) {
+      const response = h.response({
+        status: 'fail',
+        message: 'Format berkas tidak didukung',
+      });
+      response.code(400);
+      return response;
+    }
+
+    // eslint-disable-next-line radix
+    const contentLength = parseInt(cover.hapi.headers['content-length'] || '0');
+    if (contentLength > 512000) {
+      const response = h.response({
+        status: 'fail',
+        message: 'Ukuran berkas terlalu besar',
+      });
+      response.code(413);
+      return response;
+    }
 
     const filename = await this._service.writeFile(cover, cover.hapi);
 
@@ -32,7 +52,7 @@ class UploadsHandler {
     const response = h.response({
       status: 'success',
       message: 'Sampul berhasil diunggah',
-      cover: {
+      data: {
         coverUrl,
       },
     });
