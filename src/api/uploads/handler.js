@@ -1,9 +1,9 @@
 /* eslint-disable no-underscore-dangle */
 class UploadsHandler {
-  constructor(service, albumsService, validator) {
+  constructor(service, validator, albumsService) {
     this._service = service;
-    this._albumsService = albumsService;
     this._validator = validator;
+    this._albumsService = albumsService;
 
     this.postAlbumCoverHandler = this.postAlbumCoverHandler.bind(this);
   }
